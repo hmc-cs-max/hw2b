@@ -149,7 +149,7 @@ def calc_bigram_probs():
         if not x in bigram_probs:
             bigram_probs[x] = {}
         for y in bigram_counts[x]:
-
+            print(x,y)
             bigram_probs[x][y] = (bigram_counts[x][y] +k) / (unigram_counts[x] + k*len(vocab))
             
 """
@@ -165,7 +165,9 @@ def train(training_file):
     # build up counts
     for line in f_train:
         words = line.strip().split()
+        # print(words)
         clean_train_line(words)
+        # print(words) 
 
         count(zip(words, words[1:]))
     
@@ -191,15 +193,17 @@ def get_bigram_prob(bigram):
     x = bigram[0]
     y = bigram[1]
     if (x in bigram_probs) and (y in bigram_probs[x]):
+        print("from bigram table", bigram_probs[x][y])
         return(bigram_probs[x][y])
 
     elif (x in bigram_probs):
         laplaceBigram = 1/(unigram_counts[x]+len(vocab))
+        print ('from get_probs', laplaceBigram)
         return laplaceBigram
 
     else:
         laplaceBigram = 1/(len(vocab))
-
+        print ('from get_probs', laplaceBigram)
         return laplaceBigram
 
 
@@ -211,7 +215,14 @@ to modify) and calculates perplexity for the language model as applied to
 the supplied testing data
 """
 def perplexity(testing_file):
-
+    print('vocab = ', vocab)
+    print('unigram counts:, ', unigram_counts)
+    print('\n')
+    print('unigram probs: ', unigram_probs)
+    print('\n')
+    print('bigram counts: ', bigram_counts)
+    print('\n')
+    print('bigram probs: ', bigram_probs)
 
     f_test = io.open(testing_file, 'r')
     n = 1
@@ -222,9 +233,10 @@ def perplexity(testing_file):
         clean_test_line(unigrams)
         for bigram in zip(unigrams, unigrams[1:]):
 
-
+            print(bigram)
             n += 1
             bigram_prob = get_bigram_prob(bigram)
+            print('prob', bigram_prob)
             if bigram_prob == 0:
                 sys.exit("Error: Bigram probability equals zero, terminating!")
             else:
