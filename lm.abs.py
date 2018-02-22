@@ -1,16 +1,12 @@
 """
-LM.PY
-Robin Melnick
+HW2b
+lm.abs.PY
+Max Treutelaar
 
 Train a language model then calculate and report perplexity of 
 the model as applied to separate test data.
 
-NOTE: Initial supplied code trains a basic bigram model, NO smoothing, 
-NO start and end-sentence tokens (e.g., <s>, </s>), NO support 
-for unknown (previously unseen) words (unigrams) or bigrams.
 
-See "TODO" sections for areas of code to update to implement
-more sophisticated language models.
 """
 
 from __future__ import division
@@ -18,12 +14,7 @@ import io
 import math
 import sys
 
-"""
-TODO: The following dictionaries (hash tables) are global 
-stores for the critical language model data--counts and 
-probabilities. Use as-is or modify as required for your 
-implementation.
-"""
+
 
 unigram_counts = {}
 unigram_probs = {}
@@ -40,10 +31,7 @@ backOff_bigrams = {}
 
 #This is the place where D lives, and can be changed
 D = 0.5
-"""
-TODO: The following several functions build the language
-model from the training data. Modify as necessary.
-"""
+
 
 
 """
@@ -183,39 +171,41 @@ calculated probability from the language model.
 def get_bigram_prob(bigram):
     x = bigram[0]
     y = bigram[1]
-    #if x|y exists, then apply the 
+    #if x|y exists, then apply that part of the algorithm
     if (x in bigram_probs) and (y in bigram_probs[x]):
         return ((bigram_counts[x][y])-D)/unigram_counts[x]
-
+    #otherwise, move on ot full backoff 
     elif (x in bigram_probs):
         return get_backoff_prob(bigram)*unigram_counts[x]
- 
-
+    #error catch
     else:
-        sys.exit('issues yo')
-
-
-        return laplaceBigram
+        sys.exit('you got issues yo')
+"""
+GET_BACKOFF_PROB: 
+--takes in a bigram
+--performs calculations to determine the backoff probability
+"""
 
 def get_backoff_prob(bigram):
     key = bigram[1]
-    # print('key', key)
-    # print(bigram_probs[key])
-    reserved_mass = (len(bigram_probs[key])*D)/unigram_probs[key]
-    # print('reserved mass', reserved_mass)
-    sum_probabilities = calc_sum_probabilities(key)
-    # print('sum probabilities', sum_probabilities)
-    alpha = reserved_mass/(1-sum_probabilities )
-    # print('alpha', alpha)
-    return alpha
 
+    reserved_mass = (len(bigram_probs[key])*D)/unigram_probs[key]
+
+    sum_probabilities = calc_sum_probabilities(key)
+  
+    alpha = reserved_mass/(1-sum_probabilities )
+
+    return alpha
+"""
+CALC_SUM_PROBABILITIES: helper function for get_backoff_prob
+"""
 
 def calc_sum_probabilities(key):
     allKeys = bigram_probs[key].keys()
-    # print('allKeys', allKeys)
     total = 0
     for unigram in allKeys:
-        total += unigram_probs[unigram]
+        if unigram in unigram_probs:
+            total += unigram_probs[unigram]
     return total
 
 
@@ -239,9 +229,9 @@ def perplexity(testing_file):
 
 
             n += 1
-            # print(bigram)
+
             bigram_prob = get_bigram_prob(bigram)
-            # print(bigram_prob)
+
             if bigram_prob == 0:
                 sys.exit("Error: Bigram probability equals zero, terminating!")
             else:
@@ -250,7 +240,7 @@ def perplexity(testing_file):
 
 
 """
-You should not need to edit this function.
+
 
 Takes in the training and testing files and calls functions above to
 train a language model then compute and output a perplexity score.
@@ -261,7 +251,7 @@ def main(training_file, testing_file):
 
 
 """
-You should not need to edit this function.
+
 
 Commandline interface takes the names of a training file and test file.
 """

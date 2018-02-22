@@ -1,16 +1,12 @@
 """
-LM.PY
-Robin Melnick
+HW2b
+lm.addk.PY
+Max Treutelaar
 
 Train a language model then calculate and report perplexity of 
 the model as applied to separate test data.
 
-NOTE: Initial supplied code trains a basic bigram model, NO smoothing, 
-NO start and end-sentence tokens (e.g., <s>, </s>), NO support 
-for unknown (previously unseen) words (unigrams) or bigrams.
 
-See "TODO" sections for areas of code to update to implement
-more sophisticated language models.
 """
 
 from __future__ import division
@@ -18,12 +14,7 @@ import io
 import math
 import sys
 
-"""
-TODO: The following dictionaries (hash tables) are global 
-stores for the critical language model data--counts and 
-probabilities. Use as-is or modify as required for your 
-implementation.
-"""
+
 
 unigram_counts = {}
 unigram_probs = {}
@@ -37,10 +28,7 @@ vocab = {'<s>', '</s>'}
 
 #This is the place where K lives, and can be changed
 k = 1
-"""
-TODO: The following several functions build the language
-model from the training data. Modify as necessary.
-"""
+
 
 
 """
@@ -177,15 +165,6 @@ def train(training_file):
 GET_BIGRAM_PROB: Takes a bigram (tuple) as input and retrieves the
 calculated probability from the language model.
 
-CRITICAL TODO NOTES:
-    -- Function PERPLEXITY relies on GET_BIGRAM_PROB to retrieve calculated 
-       probabilities during testing phase. If you modify the structure of 
-       the language model (the bigram dictionary of dictionariess)
-       be sure to update this funciton appropriately!
-    -- As-is, returns zero for previously unseen bigrams--no smoothing,
-       backoff, or interpolation--which, as-is, will in turn trigger an error-exit
-       in PERPLEXITY if anything's encountered in testing that wasn't seen
-       in training (since the log of zero is undefined).
 """
 def get_bigram_prob(bigram):
     x = bigram[0]
@@ -233,8 +212,6 @@ def perplexity(testing_file):
 
 
 """
-You should not need to edit this function.
-
 Takes in the training and testing files and calls functions above to
 train a language model then compute and output a perplexity score.
 """
@@ -244,8 +221,6 @@ def main(training_file, testing_file):
 
 
 """
-You should not need to edit this function.
-
 Commandline interface takes the names of a training file and test file.
 """
 if __name__ == '__main__':
